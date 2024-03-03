@@ -5,9 +5,9 @@ const definitionLimit = (maxDefinitions) => (validationContext) => {
   if (doc.definitions.length > maxDefinitions) {
     validationContext.reportError(
       new Error(
-        `Request contains ${doc.definitions.length} definitions (max: ${maxDefinitions})`
+        `Request contains ${doc.definitions.length} definitions (max: ${maxDefinitions})`,
       ),
-      doc
+      doc,
     );
   }
   return validationContext;
@@ -23,7 +23,7 @@ const mapFragments = (validationContext, defTable, def, f) => {
       if (!defTable[fragment.name]) {
         validationContext.reportError(
           new Error(`Undefined fragment "${fragment.name}"`),
-          def.node
+          def.node,
         );
         return null;
       }
@@ -87,11 +87,11 @@ const fieldLimit = (maxFields) => (validationContext) => {
       validationContext,
       defs,
       def,
-      ({ name }) => getTotalNumFields(defs[name])
+      ({ name }) => getTotalNumFields(defs[name]),
     );
     def.totalNumFields = fragmentNumFields.reduce(
       (a, b) => a + b,
-      def.numFields
+      def.numFields,
     );
     return def.totalNumFields;
   };
@@ -103,19 +103,21 @@ const fieldLimit = (maxFields) => (validationContext) => {
   // Total number of fields in request is the number in (expanded) queries/mutations,
   // plus (to be safe) the number in any unused fragments that are left over.
   const numOpFields = sumNumFields(
-    Object.values(defs).filter((d) => d.node.kind === Kind.OPERATION_DEFINITION)
+    Object.values(defs).filter(
+      (d) => d.node.kind === Kind.OPERATION_DEFINITION,
+    ),
   );
   const numOtherFields = sumNumFields(
-    Object.values(defs).filter((d) => d.totalNumFields === undefined)
+    Object.values(defs).filter((d) => d.totalNumFields === undefined),
   );
   const requestNumFields = numOpFields + numOtherFields;
 
   if (requestNumFields > maxFields) {
     validationContext.reportError(
       new Error(
-        `Request contains ${requestNumFields} fields (max: ${maxFields})`
+        `Request contains ${requestNumFields} fields (max: ${maxFields})`,
       ),
-      doc
+      doc,
     );
   }
   return validationContext;
@@ -180,11 +182,11 @@ const depthLimit = (maxDepth) => (validationContext) => {
       validationContext,
       defs,
       def,
-      ({ name, atDepth }) => atDepth + getTotalDepth(defs[name])
+      ({ name, atDepth }) => atDepth + getTotalDepth(defs[name]),
     );
     def.totalDepth = Math.max(
       def.fieldDepth,
-      Math.max.apply(null, fragmentDepths)
+      Math.max.apply(null, fragmentDepths),
     );
     return def.totalDepth;
   };
@@ -194,7 +196,7 @@ const depthLimit = (maxDepth) => (validationContext) => {
     if (totalDepth > maxDepth) {
       validationContext.reportError(
         new Error(`Operation has depth ${totalDepth} (max: ${maxDepth})`),
-        def.node
+        def.node,
       );
     }
   }

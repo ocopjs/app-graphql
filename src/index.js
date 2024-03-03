@@ -12,7 +12,7 @@ class GraphQLApp {
   } = {}) {
     if (schemaName === "internal") {
       throw new Error(
-        "The schemaName 'internal' is a reserved name cannot be used in a GraphQLApp."
+        "The schemaName 'internal' is a reserved name cannot be used in a GraphQLApp.",
       );
     }
 
@@ -42,7 +42,7 @@ class GraphQLApp {
         new GraphQLPlaygroundApp({ apiPath, graphiqlPath }).getMiddleware({
           ocop,
           dev,
-        })
+        }),
       );
     }
 

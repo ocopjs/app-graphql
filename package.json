@@ -1,0 +1,36 @@
+{
+  "name": "@ocopjs/app-graphql",
+  "description": "OcopJS - Ứng dụng GraphQL cho @ocopjs packages. 🇻🇳",
+  "version": "1.0.0",
+  "author": "ocopjs",
+  "scripts": {
+    "format": "prettier --write \"**/*.{ts,tsx,md,js}\"",
+    "build": "tsup",
+    "semantic-release": "semantic-release",
+    "test": "jest"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://ocopee.com",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ocopjs/app-graphql.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ocopjs/app-graphql/issues"
+  },
+  "main": "./src/index.js",
+  "engines": {
+    "node": "16"
+  },
+  "dependencies": {
+    "@ocopjs/app-graphql-playground": "1.0.0",
+    "graphql": "^15.5.0",
+    "graphql-upload": "^11.0.0"
+  },
+  "devDependencies": {
+    "express": "^4.17.1"
+  }
+}

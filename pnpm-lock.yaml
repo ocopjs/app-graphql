@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@ocopjs/app-graphql-playground':
-    specifier: ^1.0.0
-    version: 1.0.0(@babel/core@7.24.0)(express@4.18.3)(graphql@15.8.0)
+    specifier: ^1.0.1
+    version: 1.0.1(@babel/core@7.24.0)(express@4.18.3)(graphql@15.8.0)
   graphql:
     specifier: ^15.8.0
     version: 15.8.0
@@ -637,8 +637,8 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  /@ocopjs/app-graphql-playground@1.0.0(@babel/core@7.24.0)(express@4.18.3)(graphql@15.8.0):
-    resolution: {integrity: sha512-Po8V3ROTFvKDq/QCIHMGDFzIcsKdG251iZUitmsycF2TdOlxkyifukJZdqfoQI2iXFT/Q5GGdpvisAN37fo1Bw==}
+  /@ocopjs/app-graphql-playground@1.0.1(@babel/core@7.24.0)(express@4.18.3)(graphql@15.8.0):
+    resolution: {integrity: sha512-XNyN4sgHHB3Tu/ZDtHHPY6TV14mf1I+KNYKsQok0D23Q+vWuXMPaIq6k1NxLFbTTZ6jK9PoLpShh6D9dIzOqjg==}
     engines: {node: '16'}
     peerDependencies:
       express: ^4.17.1
@@ -652,6 +652,7 @@ packages:
       falsey: 1.0.0
       graphql-tag: 2.12.6(graphql@15.8.0)
       object-hash: 2.2.0
+      querystring: 0.2.1
       terminal-link: 2.1.1
     transitivePeerDependencies:
       - '@babel/core'
@@ -3508,6 +3509,12 @@ packages:
       decode-uri-component: 0.2.2
       object-assign: 4.1.1
       strict-uri-encode: 1.1.0
+    dev: false
+
+  /querystring@0.2.1:
+    resolution: {integrity: sha512-wkvS7mL/JMugcup3/rMitHmd9ecIGd2lhFhK9N3UUQ450h66d1r3Y9nvXzQAW1Lq+wyx61k/1pfKS5KuKiyEbg==}
+    engines: {node: '>=0.4.x'}
+    deprecated: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
     dev: false
 
   /queue-microtask@1.2.3:

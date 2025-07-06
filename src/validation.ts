@@ -1,25 +1,31 @@
-const { visit, Kind } = require("graphql");
+import { visit, Kind } from "graphql";
 
-const definitionLimit = (maxDefinitions) => (validationContext) => {
-  const doc = validationContext.getDocument();
-  if (doc.definitions.length > maxDefinitions) {
-    validationContext.reportError(
-      new Error(
-        `Request contains ${doc.definitions.length} definitions (max: ${maxDefinitions})`,
-      ),
-      doc,
-    );
-  }
-  return validationContext;
-};
+export const definitionLimit =
+  (maxDefinitions: any) => (validationContext: any) => {
+    const doc = validationContext.getDocument();
+    if (doc.definitions.length > maxDefinitions) {
+      validationContext.reportError(
+        new Error(
+          `Request contains ${doc.definitions.length} definitions (max: ${maxDefinitions})`,
+        ),
+        doc,
+      );
+    }
+    return validationContext;
+  };
 
-const nodeName = (node) => (node.name && node.name.value) || "query";
+const nodeName = (node: any) => (node.name && node.name.value) || "query";
 
 // Map fragments referenced in a definition through a function
 // Mostly here for consistent handling of invalid fragment references
-const mapFragments = (validationContext, defTable, def, f) => {
+const mapFragments = (
+  validationContext: any,
+  defTable: any,
+  def: any,
+  f: any,
+) => {
   return def.fragments
-    .map((fragment) => {
+    .map((fragment: any) => {
       if (!defTable[fragment.name]) {
         validationContext.reportError(
           new Error(`Undefined fragment "${fragment.name}"`),
@@ -29,7 +35,7 @@ const mapFragments = (validationContext, defTable, def, f) => {
       }
       return f(fragment);
     })
-    .filter((x) => x !== null);
+    .filter((x: any) => x !== null);
 };
 
 // Some of these validators are a bit more complicated than they'd otherwise need to be
@@ -38,17 +44,17 @@ const mapFragments = (validationContext, defTable, def, f) => {
 // and tracking which definitions contain which fragment spreads.  Then a second pass
 // calculates the required value.
 
-const fieldLimit = (maxFields) => (validationContext) => {
+export const fieldLimit = (maxFields: any) => (validationContext: any) => {
   // The total field count includes fields that would be there after expanding fragments
   const doc = validationContext.getDocument();
-  const defs = {};
-  const newDef = (name, node) => {
+  const defs: any = {};
+  const newDef = (name: any, node: any) => {
     return (defs[name] = {
       node,
       numFields: 0,
       fragments: [],
       totalNumFields: undefined, // Calculated in second pass
-    });
+    } as any);
   };
   let curDef = newDef("doc", doc);
   visit(doc, {
@@ -72,7 +78,7 @@ const fieldLimit = (maxFields) => (validationContext) => {
     },
   });
 
-  const getTotalNumFields = (def) => {
+  const getTotalNumFields = (def: any) => {
     // Memoise results guard against infinite loops using null as sentinel
     if (def.totalNumFields === null) {
       // Mutually included fragments have infinite count
@@ -87,28 +93,28 @@ const fieldLimit = (maxFields) => (validationContext) => {
       validationContext,
       defs,
       def,
-      ({ name }) => getTotalNumFields(defs[name]),
+      ({ name }: any) => getTotalNumFields(defs[name]),
     );
     def.totalNumFields = fragmentNumFields.reduce(
-      (a, b) => a + b,
+      (a: any, b: any) => a + b,
       def.numFields,
     );
     return def.totalNumFields;
   };
 
-  const sumNumFields = (defList) => {
-    return defList.map(getTotalNumFields).reduce((a, b) => a + b, 0);
+  const sumNumFields = (defList: any) => {
+    return defList.map(getTotalNumFields).reduce((a: any, b: any) => a + b, 0);
   };
 
   // Total number of fields in request is the number in (expanded) queries/mutations,
   // plus (to be safe) the number in any unused fragments that are left over.
   const numOpFields = sumNumFields(
     Object.values(defs).filter(
-      (d) => d.node.kind === Kind.OPERATION_DEFINITION,
+      (d: any) => d.node.kind === Kind.OPERATION_DEFINITION,
     ),
   );
   const numOtherFields = sumNumFields(
-    Object.values(defs).filter((d) => d.totalNumFields === undefined),
+    Object.values(defs).filter((d: any) => d.totalNumFields === undefined),
   );
   const requestNumFields = numOpFields + numOtherFields;
 
@@ -123,16 +129,16 @@ const fieldLimit = (maxFields) => (validationContext) => {
   return validationContext;
 };
 
-const depthLimit = (maxDepth) => (validationContext) => {
+export const depthLimit = (maxDepth: any) => (validationContext: any) => {
   const doc = validationContext.getDocument();
-  const defs = {};
-  const newDef = (name, node) => {
+  const defs: any = {};
+  const newDef = (name: any, node: any) => {
     return (defs[name] = {
       node,
       fieldDepth: 0,
       fragments: [],
       totalDepth: undefined, // Calculated in second pass
-    });
+    } as any);
   };
 
   let curDef = newDef("doc", doc);
@@ -144,7 +150,6 @@ const depthLimit = (maxDepth) => (validationContext) => {
         case Kind.OPERATION_DEFINITION:
           curDef = newDef(nodeName(node), node);
           break;
-
         case Kind.FIELD:
           visitorDepth++;
           curDef.fieldDepth = Math.max(curDef.fieldDepth, visitorDepth);
@@ -167,7 +172,7 @@ const depthLimit = (maxDepth) => (validationContext) => {
   });
 
   // Total depth from explicit fields and from fragment interpolations
-  const getTotalDepth = (def) => {
+  const getTotalDepth = (def: any) => {
     // Memoise results guard against infinite loops using null as sentinel
     if (def.totalDepth === null) {
       // Mutually included fragments have infinite depth
@@ -182,7 +187,7 @@ const depthLimit = (maxDepth) => (validationContext) => {
       validationContext,
       defs,
       def,
-      ({ name, atDepth }) => atDepth + getTotalDepth(defs[name]),
+      ({ name, atDepth }: any) => atDepth + getTotalDepth(defs[name]),
     );
     def.totalDepth = Math.max(
       def.fieldDepth,
@@ -191,7 +196,7 @@ const depthLimit = (maxDepth) => (validationContext) => {
     return def.totalDepth;
   };
 
-  for (const def of Object.values(defs)) {
+  for (const def of Object.values<any>(defs)) {
     const totalDepth = getTotalDepth(def);
     if (totalDepth > maxDepth) {
       validationContext.reportError(
@@ -201,10 +206,4 @@ const depthLimit = (maxDepth) => (validationContext) => {
     }
   }
   return validationContext;
-};
-
-module.exports = {
-  depthLimit,
-  fieldLimit,
-  definitionLimit,
 };

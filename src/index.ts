@@ -1,9 +1,16 @@
-const express = require("express");
-const { graphqlUploadExpress } = require("graphql-upload");
-const { GraphQLPlaygroundApp } = require("@ocopjs/app-graphql-playground");
-const validation = require("./validation");
+import express from "express";
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
+// @ts-ignore
+import { GraphQLPlaygroundApp } from "@ocopjs/app-graphql-playground";
+import { expressMiddleware } from "@as-integrations/express5";
+import * as validation from "./validation";
 
-class GraphQLApp {
+export { validation };
+export class GraphQLApp {
+  _apiPath: string;
+  _graphiqlPath: string;
+  _schemaName: any;
+  apolloConfig: any;
   constructor({
     apiPath = "/admin/api",
     graphiqlPath = "/admin/graphiql",
@@ -25,12 +32,13 @@ class GraphQLApp {
   /**
    * @return Array<middlewares>
    */
-  getMiddleware({ ocop, dev }) {
+  async getMiddleware({ ocop, dev }: any) {
     const server = ocop.createApolloServer({
       apolloConfig: this.apolloConfig,
       schemaName: this._schemaName,
       dev,
     });
+    await server.start();
     const apiPath = this._apiPath;
     const graphiqlPath = this._graphiqlPath;
     const app = express();
@@ -43,7 +51,7 @@ class GraphQLApp {
           ocop,
           dev,
         }),
-      );
+      ) as any;
     }
 
     const maxFileSize =
@@ -52,7 +60,8 @@ class GraphQLApp {
     app.use(graphqlUploadExpress({ maxFileSize, maxFiles }));
     // { cors: false } - prevent ApolloServer from overriding ocop's CORS configuration.
     // https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#ApolloServer-applyMiddleware
-    app.use(server.getMiddleware({ path: apiPath, cors: false }));
+    //app.use(server.getMiddleware({ path: apiPath, cors: false }));
+    app.use(expressMiddleware(server, { context: server._context }));
     return app;
   }
 
@@ -61,8 +70,3 @@ class GraphQLApp {
    */
   build() {}
 }
-
-module.exports = {
-  GraphQLApp,
-  validation,
-};

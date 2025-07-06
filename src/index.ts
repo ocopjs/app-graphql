@@ -29,9 +29,6 @@ export class GraphQLApp {
     this._schemaName = schemaName;
   }
 
-  /**
-   * @return Array<middlewares>
-   */
   async getMiddleware({ ocop, dev }: any) {
     const server = ocop.createApolloServer({
       apolloConfig: this.apolloConfig,
@@ -57,16 +54,17 @@ export class GraphQLApp {
     const maxFileSize =
       (this.apolloConfig && this.apolloConfig.maxFileSize) || 200 * 1024 * 1024;
     const maxFiles = (this.apolloConfig && this.apolloConfig.maxFileSize) || 5;
-    app.use(graphqlUploadExpress({ maxFileSize, maxFiles }));
+    app.use(graphqlUploadExpress({ maxFileSize, maxFiles }) as any);
     // { cors: false } - prevent ApolloServer from overriding ocop's CORS configuration.
     // https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#ApolloServer-applyMiddleware
     //app.use(server.getMiddleware({ path: apiPath, cors: false }));
-    app.use(expressMiddleware(server, { context: server._context }));
-    return app;
+    app.use(expressMiddleware(server, { context: server._context }) as any);
+
+    return app as any;
   }
 
   /**
    * @param Options { distDir }
    */
-  build() {}
+  build() { }
 }

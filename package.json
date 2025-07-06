@@ -1,7 +1,7 @@
 {
   "name": "@ocopjs/app-graphql",
   "description": "OcopJS - Ứng dụng GraphQL cho @ocopjs packages. 🇻🇳",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "ocopjs",
   "scripts": {
     "format": "prettier --write \"**/*.{ts,tsx,md,js}\"",

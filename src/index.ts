@@ -1,7 +1,7 @@
 import express from "express";
 import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
 // @ts-ignore
-import { GraphQLPlaygroundApp } from "@ocopjs/app-graphql-playground";
+//import { GraphQLPlaygroundApp } from "@ocopjs/app-graphql-playground";
 import { expressMiddleware } from "@as-integrations/express5";
 import * as validation from "./validation";
 
@@ -40,16 +40,14 @@ export class GraphQLApp {
     const graphiqlPath = this._graphiqlPath;
     const app = express();
 
-    if (dev && graphiqlPath) {
-      // This is a convenience to make the out of the box experience slightly simpler.
-      // We should reconsider support for this at some point in the future. -TL
-      app.use(
-        new GraphQLPlaygroundApp({ apiPath, graphiqlPath }).getMiddleware({
-          ocop,
-          dev,
-        }),
-      ) as any;
-    }
+    //if (dev && graphiqlPath) {
+    //  app.use(
+    //    new GraphQLPlaygroundApp({ apiPath, graphiqlPath }).getMiddleware({
+    //      ocop,
+    //      dev,
+    //    }),
+    //  ) as any;
+    //}
 
     const maxFileSize =
       (this.apolloConfig && this.apolloConfig.maxFileSize) || 200 * 1024 * 1024;
@@ -58,7 +56,10 @@ export class GraphQLApp {
     // { cors: false } - prevent ApolloServer from overriding ocop's CORS configuration.
     // https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#ApolloServer-applyMiddleware
     //app.use(server.getMiddleware({ path: apiPath, cors: false }));
-    app.use(expressMiddleware(server, { context: server._context }) as any);
+    app.use(
+      express.json(),
+      expressMiddleware(server, { context: server._context }) as any,
+    );
 
     return app as any;
   }
@@ -66,5 +67,5 @@ export class GraphQLApp {
   /**
    * @param Options { distDir }
    */
-  build() { }
+  build() {}
 }

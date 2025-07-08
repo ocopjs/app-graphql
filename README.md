@@ -22,4 +22,3 @@ Nếu bạn gặp vấn đề hoặc có câu hỏi, vui lòng:
 
 1. Kiểm tra [Issues](https://github.com/ocopjs/app-graphql/issues) hiện có
 2. Tạo issue mới nếu chưa có
-
